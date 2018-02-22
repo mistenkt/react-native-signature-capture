@@ -187,6 +187,11 @@
 	saveButton.hidden = YES;
 	clearButton.hidden = YES;
 	UIImage *signImage = [self.sign signatureImage: _rotateClockwise withSquare:_square];
+    NSMutableArray *coordinates = [self.sign getCoordinates];
+    
+    NSError *jsonError;
+    NSData *coordinatesData = [NSJSONSerialization dataWithJSONObject:coordinates options:NSJSONWritingPrettyPrinted error:&jsonError];
+    NSString *jsonString = [[NSString alloc] initWithData:coordinatesData encoding:NSUTF8StringEncoding];
 
 	saveButton.hidden = NO;
 	clearButton.hidden = NO;
@@ -213,8 +218,9 @@
 		NSDictionary *attrs = [man attributesOfItemAtPath:tempPath error: NULL];
 		//UInt32 result = [attrs fileSize];
 
+		//#TODO: Keep base64 and instead, include 'jsonString' as separate property
 		NSString *base64Encoded = [imageData base64EncodedStringWithOptions:0];
-		[self.manager publishSaveImageEvent: tempPath withEncoded:base64Encoded];
+		[self.manager publishSaveImageEvent: tempPath withEncoded:jsonString];
 	}
 }
 

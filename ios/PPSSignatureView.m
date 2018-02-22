@@ -133,7 +133,7 @@ static PPSSignaturePoint ViewPointToGL(CGPoint viewPoint, CGRect bounds, GLKVect
 		
 		// Turn on antialiasing
 		self.drawableMultisample = GLKViewDrawableMultisample4X;
-		
+        self.coordinates = [NSMutableArray array];
 		[self setupGL];
 		
 		// Capture touches
@@ -207,6 +207,7 @@ static PPSSignaturePoint ViewPointToGL(CGPoint viewPoint, CGRect bounds, GLKVect
 	length = 0;
 	dotsLength = 0;
 	self.hasSignature = NO;
+    self.coordinates = [NSMutableArray array];
 	
 	[self setNeedsDisplay];
 }
@@ -249,6 +250,11 @@ static PPSSignaturePoint ViewPointToGL(CGPoint viewPoint, CGRect bounds, GLKVect
 	UIGraphicsEndImageContext();
 	
 	return newImage;
+}
+
+- (NSMutableArray*) getCoordinates
+{
+    return self.coordinates;
 }
 
 - (UIImage*) reduceImage:(UIImage*)image toSize:(CGSize)newSize {
@@ -340,6 +346,18 @@ static PPSSignaturePoint ViewPointToGL(CGPoint viewPoint, CGRect bounds, GLKVect
 		glBindBuffer(GL_ARRAY_BUFFER, dotsBuffer);
 		
 		PPSSignaturePoint touchPoint = ViewPointToGL(l, self.bounds, (GLKVector3){1, 1, 1});
+        
+        NSInteger x = (NSInteger) (floor(l.x));
+        NSInteger y = (NSInteger) (floor(l.y));
+        NSDictionary * coordSet = @{
+                                    @"lx" : [NSNumber numberWithInteger:x],
+                                    @"ly" : [NSNumber numberWithInteger:y],
+                                    @"mx" : [NSNumber numberWithInteger:x],
+                                    @"my" : [NSNumber numberWithInteger:y]
+                                    };
+        
+        [self.coordinates addObject:coordSet];
+        
 		addVertex(&dotsLength, touchPoint);
 		
 		PPSSignaturePoint centerPoint = touchPoint;
@@ -385,7 +403,7 @@ static PPSSignaturePoint ViewPointToGL(CGPoint viewPoint, CGRect bounds, GLKVect
 	
 	CGPoint v = [p velocityInView:self];
 	CGPoint l = [p locationInView:self];
-	
+    
 	currentVelocity = ViewPointToGL(v, self.bounds, (GLKVector3){0,0,0});
 	float distance = 0.;
 	if (previousPoint.x > 0) {
@@ -411,6 +429,17 @@ static PPSSignaturePoint ViewPointToGL(CGPoint viewPoint, CGRect bounds, GLKVect
 		
 		addVertex(&length, startPoint);
 		addVertex(&length, previousVertex);
+        
+        NSInteger x = (NSInteger)floorf(l.x);
+        NSInteger y = (NSInteger)floorf(l.y);
+        NSDictionary * coordSet = @{
+                                    @"lx" : [NSNumber numberWithInteger:x],
+                                    @"ly" : [NSNumber numberWithInteger:y],
+                                    @"mx" : [NSNumber numberWithInteger:x],
+                                    @"my" : [NSNumber numberWithInteger:y]
+                                    };
+        
+        [self.coordinates addObject:coordSet];
 		
 		self.hasSignature = YES;
 		[self.manager publishDraggedEvent];
@@ -418,7 +447,7 @@ static PPSSignaturePoint ViewPointToGL(CGPoint viewPoint, CGRect bounds, GLKVect
 	} else if ([p state] == UIGestureRecognizerStateChanged) {
 		
 		CGPoint mid = CGPointMake((l.x + previousPoint.x) / 2.0, (l.y + previousPoint.y) / 2.0);
-		
+        
 		if (distance > QUADRATIC_DISTANCE_TOLERANCE) {
 			// Plot quadratic bezier instead of line
 			unsigned int i;
@@ -434,6 +463,16 @@ static PPSSignaturePoint ViewPointToGL(CGPoint viewPoint, CGRect bounds, GLKVect
 				penThickness = startPenThickness + ((endPenThickness - startPenThickness) / segments) * i;
 				
 				CGPoint quadPoint = QuadraticPointInCurve(previousMidPoint, mid, previousPoint, (float)i / (float)(segments));
+                NSInteger x = (NSInteger)floorf(quadPoint.x);
+                NSInteger y = (NSInteger)floorf(quadPoint.y);
+                NSDictionary * coordSet = @{
+                                            @"lx" : [NSNumber numberWithInteger:x],
+                                            @"ly" : [NSNumber numberWithInteger:y],
+                                            @"mx" : [NSNumber numberWithInteger:x],
+                                            @"my" : [NSNumber numberWithInteger:y]
+                                            };
+                
+                [self.coordinates addObject:coordSet];
 				
 				PPSSignaturePoint v = ViewPointToGL(quadPoint, self.bounds, StrokeColor);
 				[self addTriangleStripPointsForPrevious:previousVertex next:v];
@@ -445,6 +484,17 @@ static PPSSignaturePoint ViewPointToGL(CGPoint viewPoint, CGRect bounds, GLKVect
 			PPSSignaturePoint v = ViewPointToGL(l, self.bounds, StrokeColor);
 			[self addTriangleStripPointsForPrevious:previousVertex next:v];
 			
+            NSInteger x = (NSInteger)floorf(l.x);
+            NSInteger y = (NSInteger)floorf(l.y);
+            NSDictionary * coordSet = @{
+                                        @"lx" : [NSNumber numberWithInteger:x],
+                                        @"ly" : [NSNumber numberWithInteger:y],
+                                        @"mx" : [NSNumber numberWithInteger:x],
+                                        @"my" : [NSNumber numberWithInteger:y]
+                                        };
+            
+            [self.coordinates addObject:coordSet];
+            
 			previousVertex = v;
 			previousThickness = penThickness;
 		}
