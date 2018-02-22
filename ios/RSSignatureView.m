@@ -190,7 +190,7 @@
     NSMutableArray *coordinates = [self.sign getCoordinates];
     
     NSError *jsonError;
-    NSData *coordinatesData = [NSJSONSerialization dataWithJSONObject:coordinates options:NSJSONWritingPrettyPrinted error:&jsonError];
+    NSData *coordinatesData = [NSJSONSerialization dataWithJSONObject:coordinates options:nil error:&jsonError];
     NSString *jsonString = [[NSString alloc] initWithData:coordinatesData encoding:NSUTF8StringEncoding];
 
 	saveButton.hidden = NO;

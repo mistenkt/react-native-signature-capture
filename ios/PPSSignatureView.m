@@ -98,7 +98,7 @@ static PPSSignaturePoint ViewPointToGL(CGPoint viewPoint, CGRect bounds, GLKVect
 	PPSSignaturePoint SignatureDotsData[maxLength];
 	uint dotsLength;
 	
-	
+
 	// Width of line at current and previous vertex
 	float penThickness;
 	float previousThickness;
@@ -404,6 +404,19 @@ static PPSSignaturePoint ViewPointToGL(CGPoint viewPoint, CGRect bounds, GLKVect
 	CGPoint v = [p velocityInView:self];
 	CGPoint l = [p locationInView:self];
     
+    NSInteger newX = (NSInteger)floorf(l.x);
+    NSInteger newY = (NSInteger)floorf(l.y);
+    NSInteger prevX = (previousPoint.x > 0) ? (NSInteger)floorf(previousPoint.x) : newX;
+    NSInteger prevY = (previousPoint.y > 0) ? (NSInteger)floorf(previousPoint.y) : newY;
+    NSDictionary * coordSet = @{
+                                @"lx" : [NSNumber numberWithInteger:newX],
+                                @"ly" : [NSNumber numberWithInteger:newY],
+                                @"mx" : [NSNumber numberWithInteger:prevX],
+                                @"my" : [NSNumber numberWithInteger:prevY]
+                                };
+    
+    [self.coordinates addObject:coordSet];
+    
 	currentVelocity = ViewPointToGL(v, self.bounds, (GLKVector3){0,0,0});
 	float distance = 0.;
 	if (previousPoint.x > 0) {
@@ -429,17 +442,6 @@ static PPSSignaturePoint ViewPointToGL(CGPoint viewPoint, CGRect bounds, GLKVect
 		
 		addVertex(&length, startPoint);
 		addVertex(&length, previousVertex);
-        
-        NSInteger x = (NSInteger)floorf(l.x);
-        NSInteger y = (NSInteger)floorf(l.y);
-        NSDictionary * coordSet = @{
-                                    @"lx" : [NSNumber numberWithInteger:x],
-                                    @"ly" : [NSNumber numberWithInteger:y],
-                                    @"mx" : [NSNumber numberWithInteger:x],
-                                    @"my" : [NSNumber numberWithInteger:y]
-                                    };
-        
-        [self.coordinates addObject:coordSet];
 		
 		self.hasSignature = YES;
 		[self.manager publishDraggedEvent];
@@ -463,16 +465,6 @@ static PPSSignaturePoint ViewPointToGL(CGPoint viewPoint, CGRect bounds, GLKVect
 				penThickness = startPenThickness + ((endPenThickness - startPenThickness) / segments) * i;
 				
 				CGPoint quadPoint = QuadraticPointInCurve(previousMidPoint, mid, previousPoint, (float)i / (float)(segments));
-                NSInteger x = (NSInteger)floorf(quadPoint.x);
-                NSInteger y = (NSInteger)floorf(quadPoint.y);
-                NSDictionary * coordSet = @{
-                                            @"lx" : [NSNumber numberWithInteger:x],
-                                            @"ly" : [NSNumber numberWithInteger:y],
-                                            @"mx" : [NSNumber numberWithInteger:x],
-                                            @"my" : [NSNumber numberWithInteger:y]
-                                            };
-                
-                [self.coordinates addObject:coordSet];
 				
 				PPSSignaturePoint v = ViewPointToGL(quadPoint, self.bounds, StrokeColor);
 				[self addTriangleStripPointsForPrevious:previousVertex next:v];
@@ -483,17 +475,6 @@ static PPSSignaturePoint ViewPointToGL(CGPoint viewPoint, CGRect bounds, GLKVect
 			
 			PPSSignaturePoint v = ViewPointToGL(l, self.bounds, StrokeColor);
 			[self addTriangleStripPointsForPrevious:previousVertex next:v];
-			
-            NSInteger x = (NSInteger)floorf(l.x);
-            NSInteger y = (NSInteger)floorf(l.y);
-            NSDictionary * coordSet = @{
-                                        @"lx" : [NSNumber numberWithInteger:x],
-                                        @"ly" : [NSNumber numberWithInteger:y],
-                                        @"mx" : [NSNumber numberWithInteger:x],
-                                        @"my" : [NSNumber numberWithInteger:y]
-                                        };
-            
-            [self.coordinates addObject:coordSet];
             
 			previousVertex = v;
 			previousThickness = penThickness;
