@@ -87,13 +87,13 @@
 				saveButton = [UIButton buttonWithType:UIButtonTypeRoundedRect];
 				[saveButton setLineBreakMode:NSLineBreakByClipping];
 				[saveButton addTarget:self action:@selector(onSaveButtonPressed)
-				            forControlEvents:UIControlEventTouchUpInside];
+							forControlEvents:UIControlEventTouchUpInside];
 				[saveButton setTitle:@"Save" forState:UIControlStateNormal];
 
 				CGSize buttonSize = CGSizeMake(80, 55.0);
 
 				saveButton.frame = CGRectMake(sign.bounds.size.width - buttonSize.width,
-				                              0, buttonSize.width, buttonSize.height);
+											  0, buttonSize.width, buttonSize.height);
 				[saveButton setBackgroundColor:[UIColor colorWithRed:250/255.f green:250/255.f blue:250/255.f alpha:1.f]];
 				[sign addSubview:saveButton];
 
@@ -102,7 +102,7 @@
 				clearButton = [UIButton buttonWithType:UIButtonTypeRoundedRect];
 				[clearButton setLineBreakMode:NSLineBreakByClipping];
 				[clearButton addTarget:self action:@selector(onClearButtonPressed)
-				             forControlEvents:UIControlEventTouchUpInside];
+							 forControlEvents:UIControlEventTouchUpInside];
 				[clearButton setTitle:@"Reset" forState:UIControlStateNormal];
 
 				clearButton.frame = CGRectMake(0, 0, buttonSize.width, buttonSize.height);
@@ -130,7 +130,7 @@
 				[saveButton setTransform:CGAffineTransformMakeRotation(DEGREES_TO_RADIANS(90))];
 				[saveButton setLineBreakMode:NSLineBreakByClipping];
 				[saveButton addTarget:self action:@selector(onSaveButtonPressed)
-				            forControlEvents:UIControlEventTouchUpInside];
+							forControlEvents:UIControlEventTouchUpInside];
 				[saveButton setTitle:@"Save" forState:UIControlStateNormal];
 
 				CGSize buttonSize = CGSizeMake(55, 80.0); //Width/Height is swapped
@@ -144,7 +144,7 @@
 				[clearButton setTransform:CGAffineTransformMakeRotation(DEGREES_TO_RADIANS(90))];
 				[clearButton setLineBreakMode:NSLineBreakByClipping];
 				[clearButton addTarget:self action:@selector(onClearButtonPressed)
-				             forControlEvents:UIControlEventTouchUpInside];
+							 forControlEvents:UIControlEventTouchUpInside];
 				[clearButton setTitle:@"Reset" forState:UIControlStateNormal];
 
 				clearButton.frame = CGRectMake(sign.bounds.size.width - buttonSize.width, 0, buttonSize.width, buttonSize.height);
@@ -187,11 +187,11 @@
 	saveButton.hidden = YES;
 	clearButton.hidden = YES;
 	UIImage *signImage = [self.sign signatureImage: _rotateClockwise withSquare:_square];
-    NSMutableArray *coordinates = [self.sign getCoordinates];
-    
-    NSError *jsonError;
-    NSData *coordinatesData = [NSJSONSerialization dataWithJSONObject:coordinates options:nil error:&jsonError];
-    NSString *jsonString = [[NSString alloc] initWithData:coordinatesData encoding:NSUTF8StringEncoding];
+	NSMutableArray *coordinates = [self.sign getCoordinates];
+	
+	NSError *jsonError;
+	NSData *coordinatesData = [NSJSONSerialization dataWithJSONObject:coordinates options:nil error:&jsonError];
+	NSString *jsonString = [[NSString alloc] initWithData:coordinatesData encoding:NSUTF8StringEncoding];
 
 	saveButton.hidden = NO;
 	clearButton.hidden = NO;

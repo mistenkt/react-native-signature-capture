@@ -133,7 +133,7 @@ static PPSSignaturePoint ViewPointToGL(CGPoint viewPoint, CGRect bounds, GLKVect
 		
 		// Turn on antialiasing
 		self.drawableMultisample = GLKViewDrawableMultisample4X;
-        self.coordinates = [NSMutableArray array];
+		self.coordinates = [NSMutableArray array];
 		[self setupGL];
 		
 		// Capture touches
@@ -207,7 +207,7 @@ static PPSSignaturePoint ViewPointToGL(CGPoint viewPoint, CGRect bounds, GLKVect
 	length = 0;
 	dotsLength = 0;
 	self.hasSignature = NO;
-    self.coordinates = [NSMutableArray array];
+	self.coordinates = [NSMutableArray array];
 	
 	[self setNeedsDisplay];
 }
@@ -254,7 +254,7 @@ static PPSSignaturePoint ViewPointToGL(CGPoint viewPoint, CGRect bounds, GLKVect
 
 - (NSMutableArray*) getCoordinates
 {
-    return self.coordinates;
+	return self.coordinates;
 }
 
 - (UIImage*) reduceImage:(UIImage*)image toSize:(CGSize)newSize {
@@ -346,18 +346,18 @@ static PPSSignaturePoint ViewPointToGL(CGPoint viewPoint, CGRect bounds, GLKVect
 		glBindBuffer(GL_ARRAY_BUFFER, dotsBuffer);
 		
 		PPSSignaturePoint touchPoint = ViewPointToGL(l, self.bounds, (GLKVector3){1, 1, 1});
-        
-        NSInteger x = (NSInteger) (floor(l.x));
-        NSInteger y = (NSInteger) (floor(l.y));
-        NSDictionary * coordSet = @{
-                                    @"lx" : [NSNumber numberWithInteger:x],
-                                    @"ly" : [NSNumber numberWithInteger:y],
-                                    @"mx" : [NSNumber numberWithInteger:x],
-                                    @"my" : [NSNumber numberWithInteger:y]
-                                    };
-        
-        [self.coordinates addObject:coordSet];
-        
+		
+		NSInteger x = (NSInteger) (floor(l.x));
+		NSInteger y = (NSInteger) (floor(l.y));
+		NSDictionary * coordSet = @{
+									@"lx" : [NSNumber numberWithInteger:x],
+									@"ly" : [NSNumber numberWithInteger:y],
+									@"mx" : [NSNumber numberWithInteger:x],
+									@"my" : [NSNumber numberWithInteger:y]
+									};
+		
+		[self.coordinates addObject:coordSet];
+		
 		addVertex(&dotsLength, touchPoint);
 		
 		PPSSignaturePoint centerPoint = touchPoint;
@@ -403,20 +403,20 @@ static PPSSignaturePoint ViewPointToGL(CGPoint viewPoint, CGRect bounds, GLKVect
 	
 	CGPoint v = [p velocityInView:self];
 	CGPoint l = [p locationInView:self];
-    
-    NSInteger newX = (NSInteger)floorf(l.x);
-    NSInteger newY = (NSInteger)floorf(l.y);
-    NSInteger prevX = (previousPoint.x > 0) ? (NSInteger)floorf(previousPoint.x) : newX;
-    NSInteger prevY = (previousPoint.y > 0) ? (NSInteger)floorf(previousPoint.y) : newY;
-    NSDictionary * coordSet = @{
-                                @"lx" : [NSNumber numberWithInteger:newX],
-                                @"ly" : [NSNumber numberWithInteger:newY],
-                                @"mx" : [NSNumber numberWithInteger:prevX],
-                                @"my" : [NSNumber numberWithInteger:prevY]
-                                };
-    
-    [self.coordinates addObject:coordSet];
-    
+	
+	NSInteger newX = (NSInteger)floorf(l.x);
+	NSInteger newY = (NSInteger)floorf(l.y);
+	NSInteger prevX = (previousPoint.x > 0) ? (NSInteger)floorf(previousPoint.x) : newX;
+	NSInteger prevY = (previousPoint.y > 0) ? (NSInteger)floorf(previousPoint.y) : newY;
+	NSDictionary * coordSet = @{
+								@"lx" : [NSNumber numberWithInteger:newX],
+								@"ly" : [NSNumber numberWithInteger:newY],
+								@"mx" : [NSNumber numberWithInteger:prevX],
+								@"my" : [NSNumber numberWithInteger:prevY]
+								};
+	
+	[self.coordinates addObject:coordSet];
+	
 	currentVelocity = ViewPointToGL(v, self.bounds, (GLKVector3){0,0,0});
 	float distance = 0.;
 	if (previousPoint.x > 0) {
@@ -449,7 +449,7 @@ static PPSSignaturePoint ViewPointToGL(CGPoint viewPoint, CGRect bounds, GLKVect
 	} else if ([p state] == UIGestureRecognizerStateChanged) {
 		
 		CGPoint mid = CGPointMake((l.x + previousPoint.x) / 2.0, (l.y + previousPoint.y) / 2.0);
-        
+		
 		if (distance > QUADRATIC_DISTANCE_TOLERANCE) {
 			// Plot quadratic bezier instead of line
 			unsigned int i;
@@ -475,7 +475,7 @@ static PPSSignaturePoint ViewPointToGL(CGPoint viewPoint, CGRect bounds, GLKVect
 			
 			PPSSignaturePoint v = ViewPointToGL(l, self.bounds, StrokeColor);
 			[self addTriangleStripPointsForPrevious:previousVertex next:v];
-            
+			
 			previousVertex = v;
 			previousThickness = penThickness;
 		}
