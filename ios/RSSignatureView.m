@@ -217,10 +217,9 @@
 		NSFileManager *man = [NSFileManager defaultManager];
 		NSDictionary *attrs = [man attributesOfItemAtPath:tempPath error: NULL];
 		//UInt32 result = [attrs fileSize];
-
-		//#TODO: Keep base64 and instead, include 'jsonString' as separate property
+        
 		NSString *base64Encoded = [imageData base64EncodedStringWithOptions:0];
-		[self.manager publishSaveImageEvent: tempPath withEncoded:jsonString];
+        [self.manager publishSaveImageEvent: tempPath withEncoded:base64Encoded withCoords:jsonString];
 	}
 }
 
