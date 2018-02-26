@@ -347,17 +347,6 @@ static PPSSignaturePoint ViewPointToGL(CGPoint viewPoint, CGRect bounds, GLKVect
 		
 		PPSSignaturePoint touchPoint = ViewPointToGL(l, self.bounds, (GLKVector3){1, 1, 1});
 		
-		NSInteger x = (NSInteger) (floor(l.x));
-		NSInteger y = (NSInteger) (floor(l.y));
-		NSDictionary * coordSet = @{
-									@"lx" : [NSNumber numberWithInteger:x],
-									@"ly" : [NSNumber numberWithInteger:y],
-									@"mx" : [NSNumber numberWithInteger:x],
-									@"my" : [NSNumber numberWithInteger:y]
-									};
-		
-		[self.coordinates addObject:coordSet];
-		
 		addVertex(&dotsLength, touchPoint);
 		
 		PPSSignaturePoint centerPoint = touchPoint;
